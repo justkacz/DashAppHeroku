@@ -7,7 +7,7 @@ import plotly.express as px
 
 import pandas as pd
 
-df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv')
+df = pd.read_csv('https:\\raw.githubusercontent.com\plotly\datasets\master\gapminderDataFiveYear.csv')
 
 app = dash.Dash(__name__)
 
