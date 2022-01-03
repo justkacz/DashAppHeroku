@@ -10,6 +10,8 @@ df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapmi
 
 app = dash.Dash(__name__)
 
+server = app.server
+
 def generate_table(dataframe, max_rows=10):
     return html.Table(
         # Header
@@ -22,26 +24,27 @@ def generate_table(dataframe, max_rows=10):
     )
 
 app.layout = html.Div([
-    html.Label(['Countries:'], style={'font-weight': 'bold', "text-align": "center"}),
-    dcc.Dropdown(
-    options=[
-        {'label': i, 'value' : i} for i in df.country.unique()
-    ],
-    multi=True,
-    value="MLT",
-    style=dict(width='50%')
-    ),
-    html.Label(['Continent:'], style={'font-weight': 'bold', "text-align": "center"}),
+    html.Label(['continent:'], style={'font-weight': 'bold', "text-align": "center"}),
     dcc.Dropdown(
     id='dropdown',
     options=[
-      {'label': i, 'value' : i} for i in df.continent.unique()
+        {'label': i, 'value' : i} for i in df.continent.unique()
     ],
-    multi=True,
-    value="MLT",
+    multi=False,
+    # value="Asia",
     style=dict(width='50%')
     ),
-    # dcc.Graph(id='graph-with-slider'),
+    # html.Label(['Continent:'], style={'font-weight': 'bold', "text-align": "center"}),
+    # dcc.Dropdown(
+    # id='dropdown',
+    # options=[
+    #   {'label': i, 'value' : i} for i in df.continent.unique()
+    # ],
+    # multi=True,
+    # value="MLT",
+    # style=dict(width='50%')
+    # ),
+    dcc.Graph(id='graph-with-slider'),
     dcc.Slider(
         id='year-slider',
         min=df['year'].min(),
@@ -55,28 +58,28 @@ app.layout = html.Div([
 
 
 @app.callback(
+    Output('graph-with-slider', 'figure'),
     Output('table-container', 'children'),
-    # Output('graph-with-slider', 'figure'),
-    # Input('year-slider', 'value')
+    Input('year-slider', 'value'),
     Input('dropdown', 'value')
     )
-# def update_figure(selected_year):
-    # filtered_df = df[df.year == selected_year]
+def update_figure(selected_year, continent):
+    if continent is None:
+        filtered_df=df[df.year==selected_year]
+    else:
+        filtered_df = df[(df.year==selected_year)&(df.continent==continent)]
+
+    fig = px.scatter(filtered_df, x="gdpPercap", y="lifeExp",
+                     size="pop", color="continent", hover_name="country",
+                     log_x=True, size_max=55)
+
+    fig.update_layout(transition_duration=500)
+    # if continent is None:
+        # return fig, generate_table(df)
 # 
-    # fig = px.scatter(filtered_df, x="gdpPercap", y="lifeExp",
-                    #  size="pop", color="continent", hover_name="country",
-                    #  log_x=True, size_max=55)
-# 
-    # fig.update_layout(transition_duration=500)
-    # return fig
+    # dff = df[df.continent.str.contains('|'.join(continent)) & df.year==selected_year]
 
-def display_table(dropdown_value):
-    if dropdown_value is None:
-        return generate_table(df)
-
-    dff = df[df.country.str.contains('|'.join(dropdown_value))]
-    return generate_table(dff)
-
+    return fig, generate_table(filtered_df)
 
 
 if __name__ == '__main__':
