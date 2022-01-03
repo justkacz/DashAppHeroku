@@ -7,7 +7,7 @@ import plotly.express as px
 
 import pandas as pd
 
-df = pd.read_csv('https:\\raw.githubusercontent.com\plotly\datasets\master\gapminderDataFiveYear.csv')
+df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv')
 
 app = dash.Dash(__name__)
 
@@ -45,7 +45,7 @@ app.layout = html.Div([
     # value="MLT",
     # style=dict(width='50%')
     # ),
-    dcc.Graph(id='graph-with-slider'),
+    # dcc.Graph(id='graph-with-slider'),
     dcc.Slider(
         id='year-slider',
         min=df['year'].min(),
@@ -59,7 +59,7 @@ app.layout = html.Div([
 
 
 @app.callback(
-    Output('graph-with-slider', 'figure'),
+    # Output('graph-with-slider', 'figure'),
     Output('table-container', 'children'),
     Input('year-slider', 'value'),
     Input('dropdown', 'value')
@@ -70,17 +70,18 @@ def update_figure(selected_year, continent):
     else:
         filtered_df = df[(df.year==selected_year)&(df.continent==continent)]
 
-    fig = px.scatter(filtered_df, x="gdpPercap", y="lifeExp",
-                     size="pop", color="continent", hover_name="country",
-                     log_x=True, size_max=55)
+    # fig = px.scatter(filtered_df, x="gdpPercap", y="lifeExp",
+                    #  size="pop", color="continent", hover_name="country",
+                    #  log_x=True, size_max=55)
 
-    fig.update_layout(transition_duration=500)
+    # fig.update_layout(transition_duration=500)
     # if continent is None:
         # return fig, generate_table(df)
 # 
     # dff = df[df.continent.str.contains('|'.join(continent)) & df.year==selected_year]
 
-    return fig, generate_table(filtered_df)
+    # return fig, generate_table(filtered_df)
+    return generate_table(filtered_df)
 
 
 if __name__ == '__main__':
