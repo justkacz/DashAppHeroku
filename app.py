@@ -17,7 +17,7 @@ app.layout = html.Div([
     html.H2('Hello World'),
     dcc.Dropdown(
         id='dropdown',
-        options=[{'label': i, 'value': i} for col in df.columns],
+        options=[{'label': i, 'value': i} for i in df.columns],
         value='LA'
     ),
     html.Div(id='display-value')
