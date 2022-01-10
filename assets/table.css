@@ -1,16 +1,132 @@
+/**
+ * CSS from the Layout Generator/Tool
+ */
+ .container {
+  display: grid;
+  grid-template-columns: 270px 1fr 270px;
+  grid-template-rows: 60px 1fr;
+  gap: 1em 1em;
+  /* grid-auto-flow: row;  */
+  grid-template-areas:
+    "header header header"
+    "sidebar1 content sidebar2"
+}
 
+.header { grid-area: header; color: rgb(23, 151, 151);}
+
+.sidebar { grid-area: sidebar1;}
+
+.sidebar { grid-area: sidebar2;}
+
+.content { grid-area: content;}
+
+/**
+ * Custom CSS added here 
+ */
 body {
-  font: normal medium/1.4 sans-serif;
+  font-family: "Raleway", sans-serif;
+  background-color: #070707;
+  padding: 1rem;
 }
-table {
-  border-collapse: collapse;
-  width: 100%;
+.container {
+  max-width: 1200px;
+  height: calc(100vh - 3rem);
+  margin: 0 auto; 
 }
-th, td {
-  padding: 0.25rem;
-  text-align: left;
-  border: 1px solid #ccc;
+.container > * {
+  display: grid;
+  align-content: start;
+  border-radius: 3px;
+  font-size: 1rem;
+  letter-spacing: 0.02rem;
+  box-shadow: 0 1px 6px 0 rgba(218, 216, 216, 0.2);
+ }
+
+ .sidebar1, .p {
+   color: rgb(193, 194, 194);
+   font-size: 0.7rem;
+   box-shadow: 0 1px 6px 0 rgba(7, 83, 83, 0.5);
+ }
+.header:hover, .content:hover, .sidebar1:hover, .sidebar2:hover {
+  -webkit-transform: scale(1.01);
+  transform: scale(1.01);
 }
-tr:hover {
-  background: yellow;
+@media (max-width: 800px) {
+  .container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 60px auto auto 60px;
+    grid-template-areas:
+      "header"
+      "sidebar1"
+      "content"
+      "sidebar2";
+  }
 }
+
+#dropdown, .dropdownCSS {
+   color: rgb(92, 91, 91);
+   margin: 1% 5%;
+  }
+
+#dropdown .VirtualizedSelectFocusedOption {
+  background-color: #afd6d1e3;
+  color: rgb(92, 91, 91);
+}
+.Select-control {
+  background-color: #070707;
+  border-color: rgb(193, 194, 194);
+  color: rgb(193, 194, 194);
+}
+.Select-clear-zone:hover {
+  color: rgb(92, 91, 91);
+}
+
+.has-value.Select--single>.Select-control .Select-value .Select-value-label, .has-value.is-pseudo-focused.Select--single>.Select-control .Select-value .Select-value-label {
+  color: rgb(193, 194, 194);
+}
+
+.is-focused:not(.is-open)>.Select-control{
+  border-color:rgb(23, 151, 151); 
+}
+.rc-slider-mark {
+  top: 30px !important;
+}
+
+.rc-slider-handle.rc-slider-handle-click-focused, .rc-slider-dot.rc-slider-dot-active, .rc-slider-handle {
+  background-color: rgba(0,0,0,0);
+  border-color: rgb(7, 83, 83);
+}
+.rc-slider-rail, .rc-slider-dot.rc-slider-dot-active, .rc-slider-handle {
+  background-color: rgba(0,0,0,0);
+}
+
+.rc-slider-handle.dragging.rc-slider-handle.dragging.rc-slider-handle.dragging, .rc-slider-handle {
+  border-color: rgb(7, 83, 83) !important;
+  box-shadow: 0 0 0 5px rgb(119, 197, 197) !important;
+}
+/* .rc-slider-handle:hover, .rc-slider-handle:active{ */
+  /* border-color: rgb(7, 83, 83); */
+/* } */
+
+.rc-slider-track {
+  background-color:rgb(7, 83, 83);
+}
+/*  */
+/* .rc-slider-handle, .rc-slider-handle-click-focused:focus { */
+  /* border-color:rgb(7, 83, 83); */
+/* } */
+
+.rc-slider-dot {
+  background-color:rgb(7, 83, 83);
+  border: solid 2px rgb(7, 83, 83);
+}
+.rc-slider-mark {
+  color: rgb(193, 194, 194);
+  font-size: 0.6rem;
+}
+/*  */
+/* .rc-slider.rc-slider-with-marks { */
+  /* background-color:rgb(7, 83, 83);  */
+  /* border-color: #fd8585; */
+  /* margin: 5px; */
+/* }  */
