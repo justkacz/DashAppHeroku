@@ -88,15 +88,17 @@ app.layout = html.Div(children=[
               dbc.CardBody([
                       html.P("Avg no. of visits per day: ", className="card-title"),
                       dcc.Markdown(id='markdown2', className="card-text"),
+                      dcc.Markdown(id='markdown6', className="card-percent")
                       # html.Hr(style={'border': "solid", "border-color": "rgba(240, 159, 10, 0.788)"})
                   ])
           ])),
         dbc.Col(dbc.Card([
               dbc.CardBody([
-                      html.P("Avg number of visits per day: ", className="card-title"),
-                      dcc.Markdown(id='markdown4', className="card-text")
+                      html.P("The most popular weekday: ", className="card-title"),
+                      dcc.Markdown(id='markdown4', className="card-text"),
+                      dcc.Markdown(id='markdown5', className="card-percent")
                   ]),
-              dbc.CardFooter("This is the footer"),
+              # dbc.CardFooter("This is the footer"),
           ]))
         ])
     ], className="content"),
@@ -107,7 +109,9 @@ app.layout = html.Div(children=[
               Output('markdown1', 'children'),
               Output('markdown2', 'children'),
               Output('markdown3', 'children'),
-              # Output('markdown4', 'children'),
+              Output('markdown4', 'children'),
+              Output('markdown5', 'children'),
+              Output('markdown6', 'children'),
               Input('tabs-example-graph', 'value'),
               Input('year-slider', 'value'),
               Input('dropdown', 'value'),
@@ -132,14 +136,18 @@ def render_content(tab, selected_year, device, selection):
     total_visits=filtered_df.value.sum()
     total_visits_perc=round((filtered_df.value.sum()/total_value)*100,2)
     avg_total_visits=round(filtered_df.value.sum()/len(filtered_df.date.unique()))
+    avg_total_visits_perc=(avg_total_visits/total_visits)*100
     total_device=filtered_df['value'].groupby(filtered_df.device).sum().idxmax()
     total_sex=filtered_df['value'].groupby(filtered_df.sex).sum().idxmax()
     total_weekday=filtered_df['value'].groupby(filtered_df.day).sum().idxmax()
+    total_weekday_perc=round((filtered_df.groupby(['day'])['value'].sum()/filtered_df.value.sum()).max()*100,2)
 
     p1= "**{:,d}**".format(total_visits)
     p2="**{:,d}**".format(avg_total_visits)
     p3="**{:.2f}%**".format(total_visits_perc)
-    # p4=
+    p4="**{}**".format(total_weekday)
+    p5="**{:.2f}%**".format(total_weekday_perc)
+    p6="**{:.2f}%**".format(avg_total_visits_perc)
 
     
     hovertemp = "Date: <b>%{x}</b><br>"
@@ -172,11 +180,11 @@ def render_content(tab, selected_year, device, selection):
         return html.Div([
         dcc.Graph(figure=fig, style=dict(margin='2%', width='98%'))
         # dcc.Graph(figure=fig3, style=dict(margin='1%', width='98%'))
-        ]), p1, p2, p3#, p4
+        ]), p1, p2, p3, p4, p5, p6
     elif tab == 'tab-2-example-graph':
         return html.Div([
         dcc.Graph(figure=fig4, style=dict(margin='2%', width='98%'), className='hist2')
-        ]), p1, p2, p3#, p4
+        ]), p1, p2, p3, p4, p5, p6
 
 @app.callback(     
      Output('boxplot', 'figure'),
