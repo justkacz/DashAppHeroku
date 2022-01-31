@@ -11,7 +11,7 @@ import numpy as np
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
 
-df=pd.read_csv("https://raw.githubusercontent.com/justkacz/webvisitors/main/webvisitors3.csv",parse_dates=['date'])
+df=pd.read_csv("https://raw.githubusercontent.com/justkacz/csvfiles/main/webvisitors3.csv",parse_dates=['date'])
 
 df=df[(df.value>=df.value.quantile(0.025))]
 df=df[(df.value<=df.value.quantile(0.975))]
