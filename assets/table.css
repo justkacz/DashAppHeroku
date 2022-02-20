@@ -90,32 +90,34 @@ body {
   }
 }
 
+/* CSS dropdown:*/
 #dropdown, .dropdownCSS {
    color: rgb(92, 91, 91);
    margin: 1% 5%;
   }
 
 #dropdown .VirtualizedSelectFocusedOption {
-  background-color: #afd6d1e3;
+  background-color: #afd6d1e3 !important;;
 }
 .Select-control {
-  background-color: #070707;
-  border-color: rgb(193, 194, 194);
-  color: rgb(193, 194, 194);
+  background-color: #070707 !important;
+  border-color: rgb(193, 194, 194) !important;
+  color: rgb(193, 194, 194) !important;
 }
 .Select-clear-zone:hover {
-  color: rgb(92, 91, 91);
+  color: rgb(92, 91, 91) !important;;
 }
 
 .has-value.Select--single>.Select-control .Select-value .Select-value-label, .has-value.is-pseudo-focused.Select--single>.Select-control .Select-value .Select-value-label {
-  color: rgb(193, 194, 194);
+  color: rgb(193, 194, 194) !important;;
 }
 
 .is-focused:not(.is-open)>.Select-control{
-  border-color:rgb(23, 151, 151); 
+  border-color:rgb(23, 151, 151) !important;; 
 }
 
 
+/* CSS slider:*/
 .rc-slider-mark {
   top: 30px !important;
 }
@@ -160,10 +162,7 @@ body {
   border-color: rgb(23, 151, 151)!important;
 }
 
-/* .card-title { */
-  /* text-align: center; */
-/* } */
-
+/* CSS cards:*/
 .card {
   background-color: rgba(27, 27, 27, 0.158);
   border-top: solid rgba(245, 114, 26, 0.534);
@@ -185,27 +184,29 @@ body {
   color: rgba(245, 114, 26, 0.534);
 }
 
-/* .js-plotly-plot .plotly svg { */
-  /* overflow: visible !important; */
-/* } */
-/*  */
-.custom-tabs {
+/* CSS tabs:*/
+.nav-tabs {
+  padding-top: .5rem;
+  border-bottom: transparent !important;
+  justify-content: space-evenly;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
-  margin: 10px 24px 0px 24px;
 }
-.custom-tab {
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-  color:#586069; 
-  border-color: transparent !important;
+
+.nav-link {
+  padding-left: 4rem;
+  padding-right: 4rem;
+  color: #586069;
   background-color: rgba(0,0,0,0) !important;
-  padding: 8px !important;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
 }
-.custom-tab--selected {
+
+.nav-link:hover {
+  color: #586069; 
+  border-color: transparent !important;
+  /* cursor: pointer; */
+}
+
+.nav-link.active {
   color: rgb(193, 194, 194) !important;
   border-color: transparent !important;
   border-top: 3px solid rgba(119, 197, 197, 60) !important;

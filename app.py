@@ -4,6 +4,7 @@ from dash import html
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 
@@ -12,6 +13,8 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
 
 df=pd.read_csv("https://raw.githubusercontent.com/justkacz/csvfiles/main/webvisitors3.csv",parse_dates=['date'])
+df['month']=pd.to_datetime(df.date).dt.month_name()
+
 
 df=df[(df.value>=df.value.quantile(0.025))]
 df=df[(df.value<=df.value.quantile(0.975))]
@@ -71,7 +74,8 @@ app.layout = html.Div(children=[
       html.Div([
       dcc.Tabs(id="tabs-example-graph", parent_className='custom-tabs', className='custom-tabs-container', value='tab-1-example-graph', children=[
         dcc.Tab(label='Line chart', value='tab-1-example-graph', className='custom-tab', selected_className='custom-tab--selected'),
-        dcc.Tab(label='Bar chart', value='tab-2-example-graph', className='custom-tab', selected_className='custom-tab--selected')]),
+        dcc.Tab(label='Bar chart', value='tab-2-example-graph', className='custom-tab', selected_className='custom-tab--selected'),
+        dcc.Tab(label='Pie chart', value='tab-3-example-graph', className='custom-tab', selected_className='custom-tab--selected')]),
       html.Div(id='tabs-content-example-graph'),
       # dcc.Markdown(id='markdown1',style={'padding': '30px 20px 10px 20px','color':'#7a8188',  "white-space": "pre-line"})
       dbc.Row([     
@@ -119,20 +123,30 @@ app.layout = html.Div(children=[
 def render_content(tab, selected_year, device, selection):
 
     filtered_df=df[df.year.between(selected_year[0],selected_year[1], inclusive=True)]
+
+    filtered_df_pie=filtered_df.copy()
+
     total_value=df.value.sum()
     # total_visits= "In selected period the number of visits was {}.".format(filtered_df.value.sum())
+    pullval=np.array([0.05]*len(filtered_df_pie))
+    # pullval.fill(0.05)
 
     if device is None:
-      if selection=='all':
-        filtered_df=filtered_df
-      else:
+      # if selection=='all':
+        # filtered_df=filtered_df
+      # else:
+      if selection!='all':
         filtered_df=filtered_df[filtered_df.sex==selection]
+        filtered_df_pie=filtered_df_pie[filtered_df_pie.sex==selection]
     else:
       if selection=='all':
-        filtered_df=filtered_df[filtered_df.device==device]
+          filtered_df=filtered_df[filtered_df.device==device]
       else:
-        filtered_df=filtered_df[(filtered_df.sex==selection)&(filtered_df.device==device)]
-   
+          filtered_df=filtered_df[(filtered_df.sex==selection)&(filtered_df.device==device)]
+          filtered_df_pie=filtered_df_pie[filtered_df_pie.sex==selection]
+      idx=np.where(filtered_df_pie.device.values==device)
+      pullval[idx[0][0]]=0.3
+
     total_visits=filtered_df.value.sum()
     total_visits_perc=round((filtered_df.value.sum()/total_value)*100,2)
     avg_total_visits=round(filtered_df.value.sum()/len(filtered_df.date.unique()))
@@ -157,9 +171,8 @@ def render_content(tab, selected_year, device, selection):
                 bgcolor="rgba(247, 246, 242, 0.2)",
                 bordercolor="rgba(247, 246, 242, 0.6)",
                 font=dict(size=9, color='rgb(140, 139, 137)', family="Raleway")),
-            yaxis_title=None,
-            xaxis=dict(titlefont_size=9, tickfont_size=9, color='rgb(193, 194, 194)', showgrid=False),
-            yaxis=dict(titlefont_size=9, tickfont_size=9, color='rgb(193, 194, 194)', showgrid=False),
+            xaxis=dict(title='Year', titlefont_size=9, tickfont_size=9, titlefont_color='#586069',color='rgb(193, 194, 194)', showgrid=False),
+            yaxis=dict(title='Number of visits', titlefont_size=9, tickfont_size=9, titlefont_color='#586069',color='rgb(193, 194, 194)', showgrid=False),
             legend=dict(title=None, font=dict(size=8, color='rgb(193, 194, 194)')),
             margin=dict(l=0, r=0, t=0, b=0)).update_traces(
             hovertemplate=hovertemp, marker=dict(size=2, color='rgb(23, 151, 151)'), line=dict(width=1))
@@ -168,23 +181,54 @@ def render_content(tab, selected_year, device, selection):
             # marker=dict(line_width=1.5, line_color='rgb(23, 151, 151)'))
     fig4=px.histogram(filtered_df, x='year', y='value', color='day', text_auto=True, barmode='group', height=350, color_discrete_sequence=['rgba(7, 83, 83, 0.5)'], 
             category_orders={'day': ['Monday', 'Tuesday', 'Wednesday','Thursday','Friday','Saturday', 'Sunday']}).update_layout(
-            margin=dict(l=30, r=0, t=20, b=0), yaxis_title=None,
+            margin=dict(l=30, r=0, t=20, b=0), yaxis_title='Number of visits',
             hoverlabel=dict(bgcolor="rgba(92, 91, 91, 0.6)", font_size=9,font_family="Raleway"), 
-            paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', xaxis=dict(titlefont_size=9, tickfont_size=9, dtick=1, color='rgb(193, 194, 194)'), yaxis=dict( titlefont_size=9, tickfont_size=9, color='rgb(193, 194, 194)', gridcolor='rgba(193, 194, 194, 0.2)'), 
+            paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', 
+            xaxis=dict(title='Year', titlefont_size=9, tickfont_size=9, titlefont_color='#586069',color='rgb(193, 194, 194)', dtick=1), 
+            yaxis=dict(titlefont_size=9, tickfont_size=9, titlefont_color='#586069',color='rgb(193, 194, 194)', gridcolor='rgba(193, 194, 194, 0.2)'), 
             legend=dict(title=None, font=dict(size=7, color='rgb(193, 194, 194)'))).update_traces(
             marker=dict(line_width=1.2, line_color='rgb(23, 151, 151)'))
     fig4.add_hline(np.mean(filtered_df.groupby(['year', 'day']).sum()).value, line_color="rgb(240, 111, 37)", line_width=1, opacity=1,line_dash="dot")
     fig4.add_annotation(text="mean", x=0, xref='paper',xanchor='right', y=np.mean(filtered_df.groupby(['year', 'day']).sum()).value,showarrow=False, font=dict(color="rgb(240, 111, 37)", size=9))
+    
+    collfill=np.array(['rgba(23, 151, 151,0.2)']*len(filtered_df_pie), dtype=object)
+    colltext=np.array(['rgb(193, 194, 194)']*len(filtered_df_pie), dtype=object)
+    # select device with max & min values:
+    maxdev=filtered_df_pie.groupby('device')['value'].sum().idxmax()
+    mindev=filtered_df_pie.groupby('device')['value'].sum().idxmin()
+    idxmax=np.where(filtered_df_pie.device.values==maxdev)
+    idxmin=np.where(filtered_df_pie.device.values==mindev)
+    colltext[idxmax[0][0]]='rgb(76, 181, 158)'
+    colltext[idxmin[0][0]]='rgb(232, 100, 95)'
+
+    fig5 = px.pie(data_frame=filtered_df_pie, values='value', names='device', color_discrete_sequence=collfill, height=350,hole=0.5)
+    fig5.update_traces(textposition='outside', textinfo='percent+label', texttemplate='   %{label}   <br>   %{percent}   ', textfont_size=9, textfont_color=colltext,
+                        marker=dict(line_width=1.2, line_color='rgb(23, 151, 151)'),
+                        pull=pullval)
+    # fig5.update_traces(textposition='outside',marker=dict(colors=['gold', 'mediumturquoise', 'darkorange', 'lightgreen'], line=dict(color='rgb(23, 151, 151)', width=2)))
+    fig5.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor='rgba(0,0,0,0)', showlegend=False,
+                        margin=dict(l=0, r=0, t=0, b=0))
+                        # xaxis=dict(tickfont_size=9, titlefont_color='#586069',color='rgb(193, 194, 194)'),
+                        # yaxis=dict(tickfont_size=9, titlefont_color='#586069',color='rgb(193, 194, 194)'))
+           
+        
+         
+         
 
     if tab == 'tab-1-example-graph':
         return html.Div([
-        dcc.Graph(figure=fig, style=dict(margin='2%', width='98%'))
+        dcc.Graph(figure=fig, style=dict(margin='1%'), className='line')
         # dcc.Graph(figure=fig3, style=dict(margin='1%', width='98%'))
         ]), p1, p2, p3, p4, p5, p6
     elif tab == 'tab-2-example-graph':
         return html.Div([
-        dcc.Graph(figure=fig4, style=dict(margin='2%', width='98%'), className='hist2')
+        dcc.Graph(figure=fig4, style=dict(margin='2%'), className='hist')
         ]), p1, p2, p3, p4, p5, p6
+    elif tab == 'tab-3-example-graph':
+        return html.Div([
+        dcc.Graph(figure=fig5, style=dict(margin='2%'), className='pie')
+        ]), p1, p2, p3, p4, p5, p6
+
 
 @app.callback(     
      Output('boxplot', 'figure'),
@@ -209,7 +253,9 @@ def update_figure2(selected_year, device, selection):
 
     
     fig2 = px.box(filtered_df2, x="device", y="value", color_discrete_sequence=['rgb(23, 151, 151)', 'grey']).update_layout(
-            paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', xaxis=dict(titlefont_size=9, tickfont_size=9, color='rgb(193, 194, 194)'),yaxis=dict(titlefont_size=9, tickfont_size=9, color='rgb(193, 194, 194)', gridcolor='rgba(193, 194, 194, 0.2)')).update_traces(
+            paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', 
+            xaxis=dict(title='Device', titlefont_size=9, tickfont_size=9, titlefont_color='#586069',color='rgb(193, 194, 194)'),
+            yaxis=dict(title='Number of visits', titlefont_size=9, tickfont_size=9, titlefont_color='#586069',color='rgb(193, 194, 194)', gridcolor='rgba(193, 194, 194, 0.2)')).update_traces(
             marker=dict(size=2, color='rgb(23, 151, 151)'), line=dict(width=1, color='rgb(23, 151, 151)'))
 
 
