@@ -71,9 +71,9 @@ app.layout = html.Div(children=[
     ], className="sidebar2"),
       html.Div([
       dbc.Tabs(id="tabs-example-graph", active_tab='tab-1-example-graph', className='custom-tabs-container', children=[
-        dbc.Tab(label='Line chart', tab_id='tab-1-example-graph'),
-        dbc.Tab(label='Bar chart', tab_id='tab-2-example-graph'),
-        dbc.Tab(label='Pie chart', tab_id='tab-3-example-graph')]),
+        dbc.Tab(label='Daily', tab_id='tab-1-example-graph'),
+        dbc.Tab(label='Weekly', tab_id='tab-2-example-graph'),
+        dbc.Tab(label='Monthly', tab_id='tab-3-example-graph')]),
       html.Div(id='tabs-content-example-graph'),
       # dcc.Markdown(id='markdown1',style={'padding': '30px 20px 10px 20px','color':'#7a8188',  "white-space": "pre-line"})   
       dbc.CardGroup([ 
