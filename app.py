@@ -1,4 +1,6 @@
 import dash
+from dash import dash_table
+from dash.dash_table.Format import Format, Scheme, Trim
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
@@ -13,7 +15,8 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
 
 df=pd.read_csv("https://raw.githubusercontent.com/justkacz/csvfiles/main/webvisitors3.csv",parse_dates=['date'])
-df['month']=pd.to_datetime(df.date).dt.month_name()
+df.date=pd.to_datetime(df.date)
+df['month']=df.date.dt.month_name()
 
 
 df=df[(df.value>=df.value.quantile(0.025))]
@@ -26,7 +29,7 @@ app.layout = html.Div(children=[
     ], className="header"),
       html.Div(children=[
           # html.Br(),
-          dcc.Markdown(">Dashbord **presents**: bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla cdn.",style={'padding': '30px 20px 30px 20px', 'color':'rgb(92, 91, 91)'}),
+          dcc.Markdown(">Dashboard **presents**: bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla cdn.",style={'padding': '30px 20px 30px 20px', 'color':'rgb(92, 91, 91)'}),
         #   html.Br(),
           html.P("Filter data by year:",style={'padding': '15px 20px'}),
           dcc.RangeSlider(
@@ -60,52 +63,48 @@ app.layout = html.Div(children=[
             ],
             value='all',
             className='char-btn',
-            # inputClassName='char-btn-i',
-            # labelClassName='char-btn-l',
             input_checked_class_name ='char-btn-ich',
             inline=True)
-            # label_style={'padding': '5%', 'cursor':'pointer', 'text-align': 'center'},
-            # inputStyle={'background-color': 'red'},
-            # style={'text-align': 'center', 'padding-bottom': '2%'})
     ], className="sidebar1"),
       html.Div(children=[
       dcc.Graph(id='boxplot', style=dict(margin='1%', width='98%'))
     ], className="sidebar2"),
       html.Div([
-      dcc.Tabs(id="tabs-example-graph", parent_className='custom-tabs', className='custom-tabs-container', value='tab-1-example-graph', children=[
-        dcc.Tab(label='Line chart', value='tab-1-example-graph', className='custom-tab', selected_className='custom-tab--selected'),
-        dcc.Tab(label='Bar chart', value='tab-2-example-graph', className='custom-tab', selected_className='custom-tab--selected'),
-        dcc.Tab(label='Pie chart', value='tab-3-example-graph', className='custom-tab', selected_className='custom-tab--selected')]),
+      dbc.Tabs(id="tabs-example-graph", active_tab='tab-1-example-graph', className='custom-tabs-container', children=[
+        dbc.Tab(label='Line chart', tab_id='tab-1-example-graph'),
+        dbc.Tab(label='Bar chart', tab_id='tab-2-example-graph'),
+        dbc.Tab(label='Pie chart', tab_id='tab-3-example-graph')]),
       html.Div(id='tabs-content-example-graph'),
-      # dcc.Markdown(id='markdown1',style={'padding': '30px 20px 10px 20px','color':'#7a8188',  "white-space": "pre-line"})
-      dbc.Row([     
-        dbc.Col(dbc.Card([
+      # dcc.Markdown(id='markdown1',style={'padding': '30px 20px 10px 20px','color':'#7a8188',  "white-space": "pre-line"})   
+      dbc.CardGroup([ 
+        dbc.Card(
                dbc.CardBody([
-                       html.P("Number of visits ", className="card-title"),
+                       html.P("Total number of visits: ", className="card-title"),
                       #  html.Hr(style={'border': "solid", "border-color": "rgba(240, 159, 10, 0.788)"}),
                        dcc.Markdown(id='markdown1', className="card-text"),
                        dcc.Markdown(id='markdown3', className="card-percent")
-                   ]),
+                   ])
               #  dbc.CardFooter([html.P(id='markdown3',className="card-title")])
-          ])),
-        dbc.Col(dbc.Card([
+          ),
+        dbc.Card(
               dbc.CardBody([
                       html.P("Avg no. of visits per day: ", className="card-title"),
                       dcc.Markdown(id='markdown2', className="card-text"),
                       dcc.Markdown(id='markdown6', className="card-percent")
                       # html.Hr(style={'border': "solid", "border-color": "rgba(240, 159, 10, 0.788)"})
                   ])
-          ])),
-        dbc.Col(dbc.Card([
+          ),
+        dbc.Card(
               dbc.CardBody([
                       html.P("The most popular weekday: ", className="card-title"),
                       dcc.Markdown(id='markdown4', className="card-text"),
                       dcc.Markdown(id='markdown5', className="card-percent")
-                  ]),
+                  ])
               # dbc.CardFooter("This is the footer"),
-          ]))
+          )
         ])
-    ], className="content"),
+     #close CardGroup
+    ], className="content")
 ], className="container")
 
 
@@ -116,7 +115,7 @@ app.layout = html.Div(children=[
               Output('markdown4', 'children'),
               Output('markdown5', 'children'),
               Output('markdown6', 'children'),
-              Input('tabs-example-graph', 'value'),
+              Input('tabs-example-graph', 'active_tab'),
               Input('year-slider', 'value'),
               Input('dropdown', 'value'),
               Input('checklist', 'value'))
@@ -129,7 +128,6 @@ def render_content(tab, selected_year, device, selection):
     total_value=df.value.sum()
     # total_visits= "In selected period the number of visits was {}.".format(filtered_df.value.sum())
     pullval=np.array([0.05]*len(filtered_df_pie))
-    # pullval.fill(0.05)
 
     if device is None:
       # if selection=='all':
@@ -146,6 +144,14 @@ def render_content(tab, selected_year, device, selection):
           filtered_df_pie=filtered_df_pie[filtered_df_pie.sex==selection]
       idx=np.where(filtered_df_pie.device.values==device)
       pullval[idx[0][0]]=0.3
+
+    filtered_df_month=filtered_df.groupby(filtered_df.date.dt.month_name()).sum()
+    filtered_df_month.index = pd.CategoricalIndex(filtered_df_month.index, 
+                               categories=['January', 'February', 'March','April','May', 'June','July','August','September','October','November','December'],
+                               ordered=True)
+    filtered_df_month=filtered_df_month.sort_index()
+    filtered_df_month['change']=filtered_df_month.value.pct_change().fillna('-')
+    filtered_df_month.reset_index(inplace=True)
 
     total_visits=filtered_df.value.sum()
     total_visits_perc=round((filtered_df.value.sum()/total_value)*100,2)
@@ -166,7 +172,7 @@ def render_content(tab, selected_year, device, selection):
     
     hovertemp = "Date: <b>%{x}</b><br>"
     hovertemp += "No. visits: <b>%{y}</b><br>"
-    fig = px.line(filtered_df, x='date', y='value', color='device', symbol='device', color_discrete_sequence=['rgb(7, 83, 83)', 'grey'], height=350).update_layout(
+    fig = px.line(filtered_df, x='date', y='value', color='device', symbol='device', color_discrete_sequence=['rgb(7, 83, 83)', 'grey'], height=320).update_layout(
                 paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', hoverlabel=dict(
                 bgcolor="rgba(247, 246, 242, 0.2)",
                 bordercolor="rgba(247, 246, 242, 0.6)",
@@ -174,12 +180,12 @@ def render_content(tab, selected_year, device, selection):
             xaxis=dict(title='Year', titlefont_size=9, tickfont_size=9, titlefont_color='#586069',color='rgb(193, 194, 194)', showgrid=False),
             yaxis=dict(title='Number of visits', titlefont_size=9, tickfont_size=9, titlefont_color='#586069',color='rgb(193, 194, 194)', showgrid=False),
             legend=dict(title=None, font=dict(size=8, color='rgb(193, 194, 194)')),
-            margin=dict(l=0, r=0, t=0, b=0)).update_traces(
+            margin=dict(l=0, r=30, t=0, b=0)).update_traces(
             hovertemplate=hovertemp, marker=dict(size=2, color='rgb(23, 151, 151)'), line=dict(width=1))
     # fig3=px.histogram(filtered_df, x='value', nbins=80, color_discrete_sequence=['rgba(23, 151, 151, 0.2)', 'grey'], height=130).update_layout(
             # paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', xaxis=dict(titlefont_size=9, tickfont_size=9, color='rgb(193, 194, 194)', showgrid=False),yaxis=dict(titlefont_size=9, tickfont_size=9, showgrid=False, color='rgb(193, 194, 194)'), margin=dict(l=60, r=10, t=10, b=1)).update_traces(
             # marker=dict(line_width=1.5, line_color='rgb(23, 151, 151)'))
-    fig4=px.histogram(filtered_df, x='year', y='value', color='day', text_auto=True, barmode='group', height=350, color_discrete_sequence=['rgba(7, 83, 83, 0.5)'], 
+    fig4=px.histogram(filtered_df, x='year', y='value', color='day', text_auto=True, barmode='group', height=320, color_discrete_sequence=['rgba(7, 83, 83, 0.5)'], 
             category_orders={'day': ['Monday', 'Tuesday', 'Wednesday','Thursday','Friday','Saturday', 'Sunday']}).update_layout(
             margin=dict(l=30, r=0, t=20, b=0), yaxis_title='Number of visits',
             hoverlabel=dict(bgcolor="rgba(92, 91, 91, 0.6)", font_size=9,font_family="Raleway"), 
@@ -198,38 +204,61 @@ def render_content(tab, selected_year, device, selection):
     mindev=filtered_df_pie.groupby('device')['value'].sum().idxmin()
     idxmax=np.where(filtered_df_pie.device.values==maxdev)
     idxmin=np.where(filtered_df_pie.device.values==mindev)
-    colltext[idxmax[0][0]]='rgb(76, 181, 158)'
-    colltext[idxmin[0][0]]='rgb(232, 100, 95)'
+    colltext[idxmax[0][0]]='rgba(76, 181, 158, 0.9)'
+    # colltext[idxmax[0][0]]='rgb(112, 16, 40)'
+    colltext[idxmin[0][0]]='rgba(232, 100, 95, 0.9)'
+    # colltext[idxmin[0][0]]='rgba(232, 7, 44, 0.7)'
 
-    fig5 = px.pie(data_frame=filtered_df_pie, values='value', names='device', color_discrete_sequence=collfill, height=350,hole=0.5)
+    min_monthly=filtered_df_month.value.min()
+
+    fig5 = px.pie(data_frame=filtered_df_pie, values='value', names='device', color_discrete_sequence=collfill, height=350, hole=0.5)
     fig5.update_traces(textposition='outside', textinfo='percent+label', texttemplate='   %{label}   <br>   %{percent}   ', textfont_size=9, textfont_color=colltext,
                         marker=dict(line_width=1.2, line_color='rgb(23, 151, 151)'),
                         pull=pullval)
     # fig5.update_traces(textposition='outside',marker=dict(colors=['gold', 'mediumturquoise', 'darkorange', 'lightgreen'], line=dict(color='rgb(23, 151, 151)', width=2)))
     fig5.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor='rgba(0,0,0,0)', showlegend=False,
-                        margin=dict(l=0, r=0, t=0, b=0))
-                        # xaxis=dict(tickfont_size=9, titlefont_color='#586069',color='rgb(193, 194, 194)'),
-                        # yaxis=dict(tickfont_size=9, titlefont_color='#586069',color='rgb(193, 194, 194)'))
-           
-        
-         
-         
+                        margin=dict(l=0, r=0, t=0, b=0))                      
 
     if tab == 'tab-1-example-graph':
-        return html.Div([
-        dcc.Graph(figure=fig, style=dict(margin='1%'), className='line')
-        # dcc.Graph(figure=fig3, style=dict(margin='1%', width='98%'))
-        ]), p1, p2, p3, p4, p5, p6
+        return dbc.Row(dcc.Graph(figure=fig, style=dict(margin='1%'))), p1, p2, p3, p4, p5, p6
     elif tab == 'tab-2-example-graph':
-        return html.Div([
-        dcc.Graph(figure=fig4, style=dict(margin='2%'), className='hist')
-        ]), p1, p2, p3, p4, p5, p6
+        return dbc.Row(dcc.Graph(figure=fig4, style=dict(margin='2%')), className='hist2'), p1, p2, p3, p4, p5, p6
     elif tab == 'tab-3-example-graph':
-        return html.Div([
-        dcc.Graph(figure=fig5, style=dict(margin='2%'), className='pie')
+        return dbc.Row([
+            dbc.Col(dcc.Graph(figure=fig5, style=dict(margin='2%'), className='pie')),
+            dbc.Col(
+                 dash_table.DataTable(
+                     data=filtered_df_month.to_dict('records'),
+                    #  columns=[{"name": i, "id": i} for i in filtered_df_month.columns],
+                     columns=[dict(name= 'month', id= 'date'),
+                              dict(name= 'value', id= 'value', type='numeric', format=Format().group(True)),
+                              dict(name= 'change', id= 'change', type='numeric', format=Format(precision=2, scheme=Scheme.percentage))],
+                     style_table={'hover':'red','marginTop':'10px', 'width':'100%'},
+                     style_cell={'backgroundColor': 'rgba(0,0,0,0)', 'textAlign': 'center', 'border': '1px solid rgba(88,96,105, 0.4)'},
+                     style_header={'backgroundColor':'rgba(27, 27, 27, 0.25)', 'color':'rgba(245, 114, 26, 0.4)','textShadow': '1px 1px 2px rgba(245, 114, 26, 0.4)', 'fontWeight':'bold', 'fontSize':'9px', 'border':'None'},
+                     style_data={'margin':'0px','color': 'rgba(193, 194, 194, 0.9)', 'fontSize':'8px'},
+                     style_as_list_view=True,
+                     style_data_conditional=[{
+                                  'if': {
+                                        'filter_query': '{change} < 0',
+                                        'column_id': 'change'
+                                        },
+                                    # 'color': 'rgb(232, 100, 95)',
+                                    'color': 'rgba(232, 100, 95, 0.7)',
+                                    'backgroundColor': 'rgba(89, 27, 25, 0.2)'
+                                    # },
+                                    # {
+                                  # 'if': {
+                                        # 'filter_query': '{value} == min_monthly',
+                                        # 'column_id': 'value'
+                                      #  },
+                                  #  'color': 'rgb(232, 100, 95)',
+                                  #  'color': 'rgba(232, 100, 95, 0.7)',
+                                  #  'backgroundColor': 'rgba(89, 27, 25, 0.2)'
+                                   }]
+                      ), width=4)
         ]), p1, p2, p3, p4, p5, p6
-
-
+       
 @app.callback(     
      Output('boxplot', 'figure'),
      Input('year-slider', 'value'),
