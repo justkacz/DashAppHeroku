@@ -155,7 +155,7 @@ def render_content(tab, selected_year, device, selection):
 
     total_visits=filtered_df.value.sum()
     total_visits_perc=round((filtered_df.value.sum()/total_value)*100,2)
-    avg_total_visits=round(filtered_df.value.sum()/len(filtered_df.date.unique()))
+    avg_total_visits=np.round(np.mean(filtered_df.value),0).astype(int)
     avg_total_visits_perc=(avg_total_visits/total_visits)*100
     total_device=filtered_df['value'].groupby(filtered_df.device).sum().idxmax()
     total_sex=filtered_df['value'].groupby(filtered_df.sex).sum().idxmax()
@@ -172,7 +172,7 @@ def render_content(tab, selected_year, device, selection):
     
     hovertemp = "Date: <b>%{x}</b><br>"
     hovertemp += "No. visits: <b>%{y}</b><br>"
-    fig = px.line(filtered_df, x='date', y='value', color='device', symbol='device', color_discrete_sequence=['rgb(7, 83, 83)', 'grey'], height=320).update_layout(
+    fig = px.line(filtered_df, x='date', y='value', color='device', symbol='device', color_discrete_sequence=['rgb(7, 83, 83)', 'rgb(0, 145, 128)', 'rgb(10, 43, 43)', 'rgb(7, 94, 94)'], height=320).update_layout(
                 paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', hoverlabel=dict(
                 bgcolor="rgba(247, 246, 242, 0.2)",
                 bordercolor="rgba(247, 246, 242, 0.6)",
@@ -231,9 +231,9 @@ def render_content(tab, selected_year, device, selection):
                      data=filtered_df_month.to_dict('records'),
                     #  columns=[{"name": i, "id": i} for i in filtered_df_month.columns],
                      columns=[dict(name= 'month', id= 'date'),
-                              dict(name= 'value', id= 'value', type='numeric', format=Format().group(True)),
+                              dict(name= 'visits', id= 'value', type='numeric', format=Format().group(True)),
                               dict(name= 'change', id= 'change', type='numeric', format=Format(precision=2, scheme=Scheme.percentage))],
-                     style_table={'hover':'red','marginTop':'10px', 'width':'100%'},
+                     style_table={'marginTop':'10px', 'width':'100%'},
                      style_cell={'backgroundColor': 'rgba(0,0,0,0)', 'textAlign': 'center', 'border': '1px solid rgba(88,96,105, 0.4)'},
                      style_header={'backgroundColor':'rgba(27, 27, 27, 0.25)', 'color':'rgba(245, 114, 26, 0.4)','textShadow': '1px 1px 2px rgba(245, 114, 26, 0.4)', 'fontWeight':'bold', 'fontSize':'9px', 'border':'None'},
                      style_data={'margin':'0px','color': 'rgba(193, 194, 194, 0.9)', 'fontSize':'8px'},

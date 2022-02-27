@@ -65,7 +65,7 @@ body {
 	}
 }
 
-.header:hover, .content:hover, .sidebar1:hover, .sidebar2:hover, .card:hover {
+.header:hover, .sidebar1:hover, .sidebar2:hover, .card:hover {
   -webkit-transform: scale(1.01);
   transform: scale(1.01);
 }
