@@ -1,6 +1,6 @@
 import dash
 from dash import dash_table
-from dash.dash_table.Format import Format, Scheme, Trim
+from dash.dash_table.Format import Format, Scheme
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
