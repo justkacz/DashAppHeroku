@@ -28,9 +28,7 @@ app.layout = html.Div(children=[
           html.P("Plotly | Dash", style={'margin': '0px'})
     ], className="header"),
       html.Div(children=[
-          # html.Br(),
-          dcc.Markdown(">Dashboard **presents**: bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla cdn.",style={'padding': '30px 20px 30px 20px', 'color':'rgb(92, 91, 91)'}),
-        #   html.Br(),
+          dcc.Markdown(">**Dashboard** presents a general overiview of the **website traffic**. It allows to track the **number of visitors** within a specific period of time and compare these numbers with figures from past months.",style={'padding': '30px 20px 10px 20px', 'color':'rgb(92, 91, 91)'}),
           html.P("Filter data by year:",style={'padding': '15px 20px'}),
           dcc.RangeSlider(
             id='year-slider',
@@ -67,6 +65,8 @@ app.layout = html.Div(children=[
             inline=True)
     ], className="sidebar1"),
       html.Div(children=[
+      # html.P("Number of visits per day per device.",style={'padding': '30px 20px 0px 20px', 'color':'rgb(92, 91, 91)'}),
+      # html.P("Read more details about box plot.",style={'padding': '10px 20px 0px 20px', 'color':'rgb(92, 91, 91)'}),
       dcc.Graph(id='boxplot', style=dict(margin='1%', width='98%'))
     ], className="sidebar2"),
       html.Div([
@@ -284,7 +284,7 @@ def update_figure2(selected_year, device, selection):
     fig2 = px.box(filtered_df2, x="device", y="value", color_discrete_sequence=['rgb(23, 151, 151)', 'grey']).update_layout(
             paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', 
             xaxis=dict(title='Device', titlefont_size=9, tickfont_size=9, titlefont_color='#586069',color='rgb(193, 194, 194)'),
-            yaxis=dict(title='Number of visits', titlefont_size=9, tickfont_size=9, titlefont_color='#586069',color='rgb(193, 194, 194)', gridcolor='rgba(193, 194, 194, 0.2)')).update_traces(
+            yaxis=dict(title='Number of visits per day', titlefont_size=9, tickfont_size=9, titlefont_color='#586069',color='rgb(193, 194, 194)', gridcolor='rgba(193, 194, 194, 0.2)')).update_traces(
             marker=dict(size=2, color='rgb(23, 151, 151)'), line=dict(width=1, color='rgb(23, 151, 151)'))
 
 
