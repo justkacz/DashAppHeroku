@@ -28,7 +28,7 @@ app.layout = html.Div(children=[
           html.P("Plotly | Dash", style={'margin': '0px'})
     ], className="header"),
       html.Div(children=[
-          dcc.Markdown(">**Dashboard** presents a general overiview of the **website traffic**. It allows to track the **number of visitors** within a specific period of time and compare these numbers with figures from past months.",style={'padding': '30px 20px 10px 20px', 'color':'rgb(92, 91, 91)'}),
+          dcc.Markdown(">**Dashboard** presents a general overview of the **website traffic**. It allows to track the **number of visitors** within a specific period of time and compare these numbers with figures from past months.",style={'padding': '30px 20px 10px 20px', 'color':'rgb(92, 91, 91)'}),
           html.P("Filter data by year:",style={'padding': '15px 20px'}),
           dcc.RangeSlider(
             id='year-slider',
