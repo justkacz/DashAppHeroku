@@ -57,7 +57,6 @@ app.layout = html.Div(children=[
                 {'label':'all', 'value':'all'},
                 {'label':'female', 'value':'female'},
                 {'label':'male', 'value':'male'}
-                # {'label': i, 'value' : i} for i in df.sex.unique()
             ],
             value='all',
             className='char-btn',
@@ -65,8 +64,6 @@ app.layout = html.Div(children=[
             inline=True)
     ], className="sidebar1"),
       html.Div(children=[
-      # html.P("Number of visits per day per device.",style={'padding': '30px 20px 0px 20px', 'color':'rgb(92, 91, 91)'}),
-      # html.P("Read more details about box plot.",style={'padding': '10px 20px 0px 20px', 'color':'rgb(92, 91, 91)'}),
       dcc.Graph(id='boxplot', style=dict(margin='1%', width='98%'))
     ], className="sidebar2"),
       html.Div([
@@ -126,13 +123,9 @@ def render_content(tab, selected_year, device, selection):
     filtered_df_pie=filtered_df.copy()
 
     total_value=df.value.sum()
-    # total_visits= "In selected period the number of visits was {}.".format(filtered_df.value.sum())
     pullval=np.array([0.05]*len(filtered_df_pie))
 
     if device is None:
-      # if selection=='all':
-        # filtered_df=filtered_df
-      # else:
       if selection!='all':
         filtered_df=filtered_df[filtered_df.sex==selection]
         filtered_df_pie=filtered_df_pie[filtered_df_pie.sex==selection]
@@ -207,17 +200,12 @@ def render_content(tab, selected_year, device, selection):
     idxmax=np.where(filtered_df_pie.device.values==maxdev)
     idxmin=np.where(filtered_df_pie.device.values==mindev)
     colltext[idxmax[0][0]]='rgba(76, 181, 158, 0.9)'
-    # colltext[idxmax[0][0]]='rgb(112, 16, 40)'
     colltext[idxmin[0][0]]='rgba(232, 100, 95, 0.9)'
-    # colltext[idxmin[0][0]]='rgba(232, 7, 44, 0.7)'
-
-    min_monthly=filtered_df_month.value.min()
 
     fig5 = px.pie(data_frame=filtered_df_pie, values='value', names='device', color_discrete_sequence=collfill, height=350, hole=0.5)
     fig5.update_traces(textposition='outside', textinfo='percent+label', texttemplate='   %{label}   <br>   %{percent}   ', textfont_size=9, textfont_color=colltext,
                        hoverinfo="label+percent+name", marker=dict(line_width=1.2, line_color='rgb(23, 151, 151)'),
                         pull=pullval)
-    # fig5.update_traces(textposition='outside',marker=dict(colors=['gold', 'mediumturquoise', 'darkorange', 'lightgreen'], line=dict(color='rgb(23, 151, 151)', width=2)))
     fig5.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor='rgba(0,0,0,0)', showlegend=False,
                          hoverlabel=dict(bgcolor="rgba(247, 246, 242, 0.2)", bordercolor="rgba(247, 246, 242, 0.6)", font=dict(size=9, color='rgb(140, 139, 137)', family="Raleway")),
                         margin=dict(l=0, r=0, t=0, b=0))                      
@@ -246,18 +234,8 @@ def render_content(tab, selected_year, device, selection):
                                         'filter_query': '{change} < 0',
                                         'column_id': 'change'
                                         },
-                                    # 'color': 'rgb(232, 100, 95)',
                                     'color': 'rgba(232, 100, 95, 0.7)',
                                     'backgroundColor': 'rgba(89, 27, 25, 0.2)'
-                                    # },
-                                    # {
-                                  # 'if': {
-                                        # 'filter_query': '{value} == min_monthly',
-                                        # 'column_id': 'value'
-                                      #  },
-                                  #  'color': 'rgb(232, 100, 95)',
-                                  #  'color': 'rgba(232, 100, 95, 0.7)',
-                                  #  'backgroundColor': 'rgba(89, 27, 25, 0.2)'
                                    }]
                       ), width=4)
         ]), p1, p2, p3, p4, p5, p6

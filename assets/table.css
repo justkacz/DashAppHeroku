@@ -1,6 +1,4 @@
-/**
- * CSS from the Layout Generator/Tool
- */
+
  .container {
   display: grid;
   grid-template-columns: 270px 1fr 270px;
@@ -21,7 +19,7 @@
 
 
 /**
- * Custom CSS added here 
+ * Custom CSS 
  */
 body {
   font-family: "Raleway", sans-serif;
@@ -158,10 +156,7 @@ body {
 }
 
 .form-check-inline {
-  /* padding: 0% 5% 2% 5%; */
   margin-left: 10%;
-  /* margin-right: 3%; */
-  /* text-align: center; */
   margin-bottom: 2%;
 }
 .char-btn-ich {
