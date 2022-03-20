@@ -64,6 +64,23 @@ app.layout = html.Div(children=[
             inline=True)
     ], className="sidebar1"),
       html.Div(children=[
+      dbc.Button("Read more details about box plot chart", id="open-offcanvas", n_clicks=0 ,style={'padding': '50px 20px 0px 20px'}),
+      dbc.Offcanvas(
+      dcc.Markdown('''
+        A **boxplot** is a standardized way of displaying the distribution of data based on a five number summary: 
+        * __minimum__ : Q1 -1.5*IQR (IQR - interquartile range: 25th to the 75th percentile)
+        * __first quartile (Q1)__ :  the middle number between the smallest number (not the “minimum”) and the median of the dataset
+        * __ median__ : the middle value of the sorted dataset
+        * __third quartile (Q3)__ : the middle value between the median and the highest value (not the “maximum”) of the dataset
+        * __maximum__ : Q3 + 1.5*IQR
+        It can tell you about your outliers and what their values are. 
+        It can also tell you if your data is symmetrical, how tightly your data is grouped, and if and how your data is skewed
+        
+        [Click here to get more details.](https://towardsdatascience.com/understanding-boxplots-5e2df7bcbd51)
+      '''),
+      id="offcanvas",
+      title="Boxplot",
+      is_open=False),
       dcc.Graph(id='boxplot', style=dict(margin='1%', width='98%'))
     ], className="sidebar2"),
       html.Div([
@@ -270,6 +287,18 @@ def update_figure2(selected_year, device, selection):
 
 
     return fig2
+
+
+@app.callback(
+    Output("offcanvas", "is_open"),
+    Input("open-offcanvas", "n_clicks"),
+    [State("offcanvas", "is_open")],
+)
+def toggle_offcanvas(n1, is_open):
+    if n1:
+        return not is_open
+    return is_open
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)

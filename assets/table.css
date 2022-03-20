@@ -95,6 +95,40 @@ body {
   }
 }
 
+/*  sidebar offcanvas */
+
+.btn-primary {
+  font-size: 0.6rem;
+  color: rgb(193, 194, 194);
+  font-family: "Raleway", sans-serif;
+  background-color: rgba(0,0,0,0);
+  border-color: rgba(0,0,0,0);
+}
+
+.btn-primary:hover {
+  color: rgba(23, 151, 151, 20);
+  background-color: rgba(0,0,0,0) !important;
+  border-color: rgba(0,0,0,0) !important;
+  box-shadow: 0 0 0 .25rem rgba(0,0,0,0) !important;
+}
+
+
+.btn-check:focus+.btn-primary, .btn-primary:focus {
+  color: #fff;
+  background-color: rgba(0,0,0,0) !important;
+  border-color: rgba(0,0,0,0) !important;
+  box-shadow: 0 0 0 .25rem rgba(0,0,0,0) !important;
+}
+.btn-close:focus {
+  box-shadow: 0 0 0 0.25rem rgba(23, 151, 151, 0.4) !important;
+}
+.offcanvas-body {
+  font-size: 11px;
+}
+.offcanvas {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
 /* CSS dropdown:*/
 #dropdown, .dropdownCSS {
    color: rgb(92, 91, 91);
