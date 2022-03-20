@@ -72,7 +72,8 @@ app.layout = html.Div(children=[
         * __first quartile (Q1)__ :  the middle number between the smallest number (not the “minimum”) and the median of the dataset
         * __ median__ : the middle value of the sorted dataset
         * __third quartile (Q3)__ : the middle value between the median and the highest value (not the “maximum”) of the dataset
-        * __maximum__ : Q3 + 1.5*IQR
+        * __maximum__ : Q3 + 1.5*IQR  
+        
         It can tell you about your outliers and what their values are. 
         It can also tell you if your data is symmetrical, how tightly your data is grouped, and if and how your data is skewed
         
