@@ -2,7 +2,7 @@ import dash
 from dash import dash_table
 from dash.dash_table.Format import Format, Scheme, Trim
 from dash import dcc
-from dash import html
+from dash import html, State
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 import plotly.express as px
