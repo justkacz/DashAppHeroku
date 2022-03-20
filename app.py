@@ -172,6 +172,8 @@ def render_content(tab, selected_year, device, selection):
     
     hovertemp = "Date: <b>%{x}</b><br>"
     hovertemp += "No. visits: <b>%{y}</b><br>"
+    hovertemp2= "Year: <b>%{x}</b><br>"
+    hovertemp2 += "No. visits: <b>%{y}</b><br>"
     fig = px.line(filtered_df, x='date', y='value', color='device', symbol='device', color_discrete_sequence=['rgb(7, 83, 83)', 'rgb(0, 145, 128)', 'rgb(10, 43, 43)', 'rgb(7, 94, 94)'], height=320).update_layout(
                 paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', hoverlabel=dict(
                 bgcolor="rgba(247, 246, 242, 0.2)",
@@ -188,12 +190,12 @@ def render_content(tab, selected_year, device, selection):
     fig4=px.histogram(filtered_df, x='year', y='value', color='day', text_auto=True, barmode='group', height=320, color_discrete_sequence=['rgba(7, 83, 83, 0.5)'], 
             category_orders={'day': ['Monday', 'Tuesday', 'Wednesday','Thursday','Friday','Saturday', 'Sunday']}).update_layout(
             margin=dict(l=30, r=0, t=20, b=0), yaxis_title='Number of visits',
-            hoverlabel=dict(bgcolor="rgba(92, 91, 91, 0.6)", font_size=9,font_family="Raleway"), 
+            hoverlabel=dict(bgcolor="rgba(247, 246, 242, 0.2)", bordercolor="rgba(247, 246, 242, 0.6)",font=dict(size=9, color='rgb(140, 139, 137)', family="Raleway")), 
             paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', 
             xaxis=dict(title='Year', titlefont_size=9, tickfont_size=9, titlefont_color='#586069',color='rgb(193, 194, 194)', dtick=1), 
             yaxis=dict(titlefont_size=9, tickfont_size=9, titlefont_color='#586069',color='rgb(193, 194, 194)', gridcolor='rgba(193, 194, 194, 0.2)'), 
             legend=dict(title=None, font=dict(size=7, color='rgb(193, 194, 194)'))).update_traces(
-            marker=dict(line_width=1.2, line_color='rgb(23, 151, 151)'))
+            hovertemplate=hovertemp2,marker=dict(line_width=1.2, line_color='rgb(23, 151, 151)'))
     fig4.add_hline(np.mean(filtered_df.groupby(['year', 'day']).sum()).value, line_color="rgb(240, 111, 37)", line_width=1, opacity=1,line_dash="dot")
     fig4.add_annotation(text="mean", x=0, xref='paper',xanchor='right', y=np.mean(filtered_df.groupby(['year', 'day']).sum()).value,showarrow=False, font=dict(color="rgb(240, 111, 37)", size=9))
     
@@ -213,10 +215,11 @@ def render_content(tab, selected_year, device, selection):
 
     fig5 = px.pie(data_frame=filtered_df_pie, values='value', names='device', color_discrete_sequence=collfill, height=350, hole=0.5)
     fig5.update_traces(textposition='outside', textinfo='percent+label', texttemplate='   %{label}   <br>   %{percent}   ', textfont_size=9, textfont_color=colltext,
-                        marker=dict(line_width=1.2, line_color='rgb(23, 151, 151)'),
+                       hoverinfo="label+percent+name", marker=dict(line_width=1.2, line_color='rgb(23, 151, 151)'),
                         pull=pullval)
     # fig5.update_traces(textposition='outside',marker=dict(colors=['gold', 'mediumturquoise', 'darkorange', 'lightgreen'], line=dict(color='rgb(23, 151, 151)', width=2)))
     fig5.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor='rgba(0,0,0,0)', showlegend=False,
+                         hoverlabel=dict(bgcolor="rgba(247, 246, 242, 0.2)", bordercolor="rgba(247, 246, 242, 0.6)", font=dict(size=9, color='rgb(140, 139, 137)', family="Raleway")),
                         margin=dict(l=0, r=0, t=0, b=0))                      
 
     if tab == 'tab-1-example-graph':
