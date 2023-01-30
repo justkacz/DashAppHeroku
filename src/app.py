@@ -198,7 +198,7 @@ def render_content(tab, selected_year, device, selection):
     # fig3=px.histogram(filtered_df, x='value', nbins=80, color_discrete_sequence=['rgba(23, 151, 151, 0.2)', 'grey'], height=130).update_layout(
             # paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', xaxis=dict(titlefont_size=9, tickfont_size=9, color='rgb(193, 194, 194)', showgrid=False),yaxis=dict(titlefont_size=9, tickfont_size=9, showgrid=False, color='rgb(193, 194, 194)'), margin=dict(l=60, r=10, t=10, b=1)).update_traces(
             # marker=dict(line_width=1.5, line_color='rgb(23, 151, 151)'))
-    fig4=px.histogram(filtered_df, x='year', y='value', color='day', text_auto=True, barmode='group', height=320, color_discrete_sequence=['rgba(7, 83, 83, 0.5)'], 
+    fig4=px.histogram(filtered_df, x='year', y='value', color='day', text_auto=False, barmode='group', height=320, color_discrete_sequence=['rgba(7, 83, 83, 0.5)'], 
             category_orders={'day': ['Monday', 'Tuesday', 'Wednesday','Thursday','Friday','Saturday', 'Sunday']}).update_layout(
             margin=dict(l=30, r=0, t=20, b=0), yaxis_title='Number of visits',
             hoverlabel=dict(bgcolor="rgba(247, 246, 242, 0.2)", bordercolor="rgba(247, 246, 242, 0.6)",font=dict(size=9, color='rgb(140, 139, 137)', family="Raleway")), 
