@@ -77,7 +77,7 @@ app.layout = html.Div(children=[
         It can tell you about your outliers and what their values are. 
         It can also tell you if your data is symmetrical, how tightly your data is grouped, and if and how your data is skewed
         
-        [Click here to get more details.](https://towardsdatascience.com/understanding-boxplots-5e2df7bcbd51)
+        [Click here to get more details.](https://en.wikipedia.org/wiki/Box_plot)
       '''),
       id="offcanvas",
       title="Boxplot",
